@@ -69,10 +69,10 @@ JSON
 )
 ```
 
-### 2. Signing Key (Ed25519)
+### 2. PKCS8 PEM Private Key (RSA-3072 for the default RS256 algorithm)
 
 ```bash
-openssl genpkey -algorithm ed25519 | \
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:3072 | \
   gcloud secrets create easy-oidc-signing-key \
     --replication-policy=automatic \
     --data-file=-
@@ -239,7 +239,8 @@ module "easy_oidc" {
 | clients | Map of OIDC client configurations | `map(object)` | - | yes |
 | subnetwork | Subnetwork name/self-link/ID (auto-created if omitted) | `string` | `null` | no |
 | subnetwork_cidr | IPv4 CIDR for auto-created subnetwork | `string` | `"10.0.0.0/24"` | no |
-| signing_key_secret_name | Secret Manager version name for signing key | `string` | `null` | no |
+| signing_key_secret_name | Secret Manager version name for a PKCS8 PEM private key compatible with `signing_algorithm` | `string` | `null` | no |
+| signing_algorithm | JWT signing algorithm | `string` | `"RS256"` | no |
 | default_redirect_uris | Default redirect URIs | `list(string)` | `["http://localhost:8000"]` | no |
 | groups_overrides | Group override mappings | `map(map(list(string)))` | `{}` | no |
 | enable_ipv4 | Enable IPv4 public address | `bool` | `true` | no |
